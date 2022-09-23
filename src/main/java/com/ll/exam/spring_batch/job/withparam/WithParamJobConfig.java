@@ -11,6 +11,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,29 +22,30 @@ public class WithParamJobConfig {
     private final StepBuilderFactory stepBuilderFactory;
 
     @Bean
-    public Job withParamJob() {
+    public Job withParamJob(Step withParamStep1) {
         return jobBuilderFactory.get("withParamJob")
-                .start(withParamStep1())
+                .start(withParamStep1)
                 .build();
     }
 
+    @Bean
     @JobScope
-    @Bean
-    public Step withParamStep1() {
+    public Step withParamStep1(Tasklet withParamStep1Tasklet1) {
         return stepBuilderFactory.get("withParamStep1")
-                .tasklet(withParamStep1Tasklet1())
+                .tasklet(withParamStep1Tasklet1)
                 .build();
     }
 
-    @StepScope
     @Bean
-    public Tasklet withParamStep1Tasklet1() {
-        return new Tasklet() {
-            @Override
-            public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-                System.out.println("withParam Tacklet 1");
-                return RepeatStatus.FINISHED;
-            }
+    @StepScope
+    public Tasklet withParamStep1Tasklet1(
+            @Value("#{jobParameters['name']}") String name,
+            @Value("#{jobParameters['age']}") int age
+    ) {
+        return (contribution, chunkContext) -> {
+            System.out.println("WithParam 테스클릿 1, %s, %d".formatted(name, age));
+
+            return RepeatStatus.FINISHED;
         };
     }
 }
