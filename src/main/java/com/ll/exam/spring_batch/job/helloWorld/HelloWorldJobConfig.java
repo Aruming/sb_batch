@@ -26,6 +26,7 @@ public class HelloWorldJobConfig {
         return jobBuilderFactory.get("helloWorldJob")
                 .incrementer(new RunIdIncrementer()) // 강제로 매번 다른 ID를 실행시에 파라미터로 부여
                 .start(helloWorldStep1())
+                .next(helloWorldStep2())
                 .build();
     }
 
@@ -33,17 +34,37 @@ public class HelloWorldJobConfig {
     @Bean
     public Step helloWorldStep1() {
         return stepBuilderFactory.get("helloWorldStep1")
-                .tasklet(helloWorldTasklet())
+                .tasklet(helloWorldStep1Tasklet())
                 .build();
     }
 
     @StepScope
     @Bean
-    public Tasklet helloWorldTasklet() {
+    public Tasklet helloWorldStep1Tasklet() {
         return new Tasklet() {
             @Override
             public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-                System.out.println("헬로월드!");
+                System.out.println("헬로월드! 1");
+                return RepeatStatus.FINISHED;
+            }
+        };
+    }
+
+    @JobScope
+    @Bean
+    public Step helloWorldStep2() {
+        return stepBuilderFactory.get("helloWorldStep2")
+                .tasklet(helloWorldStep2Tasklet())
+                .build();
+    }
+
+    @StepScope
+    @Bean
+    public Tasklet helloWorldStep2Tasklet() {
+        return new Tasklet() {
+            @Override
+            public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+                System.out.println("헬로월드! 2");
                 return RepeatStatus.FINISHED;
             }
         };
