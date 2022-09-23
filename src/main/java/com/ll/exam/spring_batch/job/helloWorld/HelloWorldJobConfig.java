@@ -65,6 +65,11 @@ public class HelloWorldJobConfig {
             @Override
             public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
                 System.out.println("헬로월드! 2");
+
+                if ( true ) {
+                    throw new Exception("실패 : 헬로월드 테스클릿 2");
+                }
+
                 return RepeatStatus.FINISHED;
             }
         };
