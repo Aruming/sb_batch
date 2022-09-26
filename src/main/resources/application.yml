@@ -11,3 +11,6 @@ spring:
     password: Aruming
   jpa:
     show-sql: true
+logging:
+  level:
+    com.ll.exam.spring_batch: debug
