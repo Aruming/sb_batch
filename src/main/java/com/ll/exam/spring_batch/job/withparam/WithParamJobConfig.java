@@ -42,7 +42,7 @@ public class WithParamJobConfig {
     @StepScope
     public Tasklet withParamStep1Tasklet1(
             @Value("#{jobParameters['name']}") String name,
-            @Value("#{jobParameters['age']}") int age
+            @Value("#{jobParameters['age']}") Long age
     ) {
         return (contribution, chunkContext) -> {
             log.debug("name : {}, age : {}", name, age);
